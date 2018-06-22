@@ -43,7 +43,7 @@ functions should also fail with error, in case initialization fails.
 Asynchronous initialization is implemented by adding the following to
 the end of the module file:
 
-```
+```js
 // This is a custom function initiating all the initializations
 // required by the module. This one is the one you should modify.
 function moduleInitialize(moduleRegisterInitialization) {
@@ -88,7 +88,7 @@ returning promises. All such functions that require module
 initializations to be complete before execution, should look something
 like the following:
 
-```
+```js
 function myFunction(a, b, c) {
   var rv = (moduleInitWait()
             .then(function() {
@@ -113,7 +113,7 @@ it is of course possible, but why would you?
 However after node.js 8.0 you might want to use async functions and
 awaits and it is very much possible. More extensive example below:
 
-```
+```js
 'use strict';
 
 async function delay(ms) {
@@ -186,7 +186,7 @@ your module a function that just waits for the initializations to
 complete. This can be done simply by exporting moduleInitWait among
 the methods actually doing something module specific.
 
-```
+```js
 async function myFunc1() {
     try {
         await moduleInitWait();
@@ -213,7 +213,7 @@ ones, let alone making the execution of a synchronous function depend
 from the asynchronous initialization of the module, but if absolutely
 necessarily, it's quite trivial to do. Something like this:
 
-```
+```js
 async function myFunc1() {
     try {
         await moduleInitWait();
@@ -260,7 +260,7 @@ If you feel particularly lazy or have an existing module, you might
 want to use a magic wrapper to make all your exported functions
 initialization aware without actually editing them too much.
 
-```
+```js
 'use strict';
 
 // This is the original code without any initializations.
@@ -278,7 +278,7 @@ module.exports = {
 
 becomes
 
-```
+```js
 'use strict';
 
 // This is the same code pimped so that initializations are completed
@@ -316,7 +316,7 @@ module.exports = {
 And for all of us using node.js 6.x e.g. in AWS Lambda, here is a
 non-async-await version of moduleInitWrapper.
 
-```
+```js
 function moduleInitWaitWrapper(func) {
     return function(...args) {
         return (moduleInitWait()
@@ -336,7 +336,7 @@ initialization is left hanging e.g. because of some unhandled
 exception or some other bug. This is done by passing true as the third
 parameter of the module setup. Like this:
 
-```
+```js
 var moduleInitWait = ((require('module-async-init'))(moduleInitialize, undefined, true));
 ```
 
